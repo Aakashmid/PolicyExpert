@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 # Create your models here.
 
 
-class CustomUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def create_user(self, email, password=None, **extra_fields):
@@ -38,7 +38,7 @@ class CustomUserManager(BaseUserManager):
 
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     username = None  # remove username field
     email = models.EmailField(unique=True)
 
@@ -47,12 +47,15 @@ class CustomUser(AbstractUser):
         ("employee", "Employee"),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="employee")
+    date_joined = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now= True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # no username required
 
-    objects = CustomUserManager()  # type: ignore[assignment]
+    objects = UserManager()  # type: ignore[assignment]
 
     def __str__(self):
         return f"{self.email} - ({self.role})"
+
 

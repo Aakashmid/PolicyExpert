@@ -1,45 +1,30 @@
-# Authentication
+# Api Endpoints 
 
-POST /api/auth/login/
 
-Description
+## Authentication
+- POST /api/auth/login/  - login user ( only is_active = true users)
+- POST /api/auth/logout/ - logout user 
+- GET /api/about/me/  - get current user object
 
-Login user
 
-Permission
 
-Public
 
-Request
 
-{
-    "email":"",
-    "password":""
-}
+## Admin permissoins routes
 
-Response
+### User management
 
-{
-    "access":"",
-    "refresh":"",
-    "user":{
-        "id":1,
-        "role":"ADMIN"
-    }
-}
+- POST /api/users/   - create user 
+- GET /api/users/    - get users list
+- PATCH  /api/users/<int:user_id>/   - update user 
+- DELETE /api/users/<int:user_id>/   - delete user 
 
+
+
+## Policy Management 
 ------------------------------------------------
 
-GET /api/auth/me/
-
-Description : will return 
-
-Current user
-
-Permission
-
-Authenticated
-
-------------------------------------------------
-
-POST /api/auth/logout/
+- POST /api/policis/  - create policy 
+- GET /api/policis/  - list policies
+- PATCH /api/policis/  - update policy 
+- DELETE /api/policis/  - delete policy 

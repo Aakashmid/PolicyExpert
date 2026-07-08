@@ -1,5 +1,9 @@
+import os
 from pathlib import Path
 from datetime import timedelta
+import django_stubs_ext
+django_stubs_ext.monkeypatch()   
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -114,6 +118,11 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
+
+MEDIA_URL = '/media/'   # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # actual folder where files are stored
+
+
 # dj_rest_auth configuration
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -141,4 +150,4 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-AUTH_USER_MODEL = "accounts.CustomUser"
+AUTH_USER_MODEL = "accounts.User"
