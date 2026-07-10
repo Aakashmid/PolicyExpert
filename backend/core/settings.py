@@ -2,7 +2,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import django_stubs_ext
-django_stubs_ext.monkeypatch()   
+
+django_stubs_ext.monkeypatch()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     # third party apps
     "rest_framework",
     "drf_spectacular",
+    "django_celery_results",
 ]
 
 
@@ -118,17 +120,21 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
+MEDIA_URL = "/media/"  # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # actual folder where files are stored
 
-MEDIA_URL = '/media/'   # URL prefix for media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # actual folder where files are stored
 
-
-# dj_rest_auth configuration
+# REST_FRAMEWORK configurations
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PARSER_CLASSES": [
+        # "rest_framework.parsers.JSONParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.MultiPartParser",  # important for file uploads
+    ],
 }
 
 
@@ -151,3 +157,10 @@ SPECTACULAR_SETTINGS = {
 
 
 AUTH_USER_MODEL = "accounts.User"
+
+
+# Celery settings
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/1"
+CELERY_RESULT_BACKEND = "django-db"  # using django database as result backend
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_RESULT_EXTENDED = True  # for enabling task name and other fields in adminsiteModuleNotFoundError: No module named 'django-db'

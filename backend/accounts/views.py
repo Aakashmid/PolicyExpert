@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny , IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import extend_schema
 from .serializers import LoginSerializer, UserSerializer, LoginResponseSerializer
-from .permissions import IsEmployee, IsAdmin 
+from core.permissions import IsEmployee, IsAdmin 
 from typing import Any
 User = get_user_model()
 # Create your views here.
@@ -74,6 +74,8 @@ class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
+
+    
 
     
 

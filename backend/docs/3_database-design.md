@@ -21,8 +21,9 @@ policy [icon: document , color : white] {
   effective_from timestamp  
   version float  
   description  string optional
-  uploaded_at timestamp
-  updated_at timestamp
+  uploaded_on timestamp
+  updated_on timestamp
+  uploaded_by fk
 }
 
 
