@@ -2,3 +2,10 @@
 __pycache__/
 
 db.sqlite3
+
+.env
+
+local_chromaDb/
+
+media/
+static/

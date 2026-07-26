@@ -13,6 +13,7 @@ class Policy(models.Model):
     file = models.FileField(upload_to="policies/", max_length=100)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES,default="Processing")
     version = models.CharField(max_length=20, default="v1.0")
+    file_hash = models.CharField(max_length=64, unique=True)
     description = models.CharField(max_length=100)
     effective_from = models.DateTimeField()
     uploaded_on = models.DateTimeField(auto_now_add=True)

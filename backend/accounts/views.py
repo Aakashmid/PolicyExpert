@@ -4,6 +4,7 @@ from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny , IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from drf_spectacular.utils import extend_schema
 from .serializers import LoginSerializer, UserSerializer, LoginResponseSerializer
 from core.permissions import IsEmployee, IsAdmin 
@@ -54,12 +55,14 @@ class LoginView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data["user"]   # type: ignore
-            access_token = str(RefreshToken.for_user(user).access_token)
+            access_token = RefreshToken.for_user(user).access_token
+            refresh_token = RefreshToken.for_user(user)
             user_data = UserSerializer(user).data  # user data
 
             response_data = {
                 "detail": "Login successful",
                 "access": access_token,
+                "refresh": refresh_token,
                 "user": user_data,
             }
 
@@ -70,14 +73,44 @@ class LoginView(APIView):
         return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+# had to test 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        try:
+            # Get the refresh token from the request body
+            refresh_token = request.data.get('refresh_token')
+            
+            if not refresh_token:
+                return Response(
+                    {'detail': 'Refresh token is required.'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Create a RefreshToken instance
+            token = RefreshToken(refresh_token)
+            
+            # Blacklist the token
+            token.blacklist()
+            
+            return Response(
+                {'detail': 'Successfully logged out.'}, 
+                status=status.HTTP_205_RESET_CONTENT
+            )
+            
+        except TokenError as e:
+            return Response(
+                {'detail': 'Invalid token or already logged out.'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
 
-    
-
-    
 
 # havt to test 
 class UserDeleteView(generics.DestroyAPIView):
