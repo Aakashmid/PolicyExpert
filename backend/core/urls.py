@@ -22,9 +22,8 @@ urlpatterns = [
         name="redoc",  # ReDoc UI
     ),
     path("api/v1/policies/", include("policies.urls"), name="policies"),
-    path(
-        "api/v1/", include("accounts.urls"), name="users"
-    ),  # Authentication endpoint and user related endpoints
+    path("api/v1/", include("accounts.urls"), name="users"),  # Authentication endpoint and user related endpoints
+    # path("api/v1/chat/", include("chat.urls"), name="chat"),
 ]
 
 

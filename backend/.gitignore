@@ -6,6 +6,6 @@ db.sqlite3
 .env
 
 local_chromaDb/
-
+docs/
 media/
 static/
