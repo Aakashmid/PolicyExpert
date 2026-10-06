@@ -1,5 +1,6 @@
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class TokenService:
     @staticmethod
@@ -31,4 +32,3 @@ class TokenService:
             max_age=60 * 60 * 24 * 7,  # 7 days
         )
         return response
-

@@ -1,18 +1,19 @@
-from rest_framework.response import Response
-from django.contrib.auth import get_user_model
-from rest_framework import status, generics, serializers
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.exceptions import NotAuthenticated, AuthenticationFailed
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
-from drf_spectacular.utils import extend_schema, OpenApiResponse, inline_serializer
-from .services import PasswordService, TokenService
-
-from drf_spectacular.types import OpenApiTypes
-from .serializers import LoginSerializer, UserSerializer, ChangePasswordSerializer
-from core.permissions import IsEmployee, IsAdmin
 from typing import Any
+
+from core.permissions import IsAdmin, IsEmployee
+from django.contrib.auth import get_user_model
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from rest_framework import generics, serializers, status
+from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from .serializers import ChangePasswordSerializer, LoginSerializer, UserSerializer
+from .services import PasswordService, TokenService
 
 User = get_user_model()
 # Create your views here.
@@ -38,7 +39,9 @@ class LoginView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]  # type: ignore
-        return TokenService.create_token_response(user, 'Login successful', status.HTTP_200_OK)
+        return TokenService.create_token_response(
+            user, "Login successful", status.HTTP_200_OK
+        )
 
 
 class CustomTokenRefreshView(APIView):
@@ -57,7 +60,7 @@ class CustomTokenRefreshView(APIView):
     )
     def post(self, request):
         try:
-            refresh_token = request.COOKIES.get('refresh_token')
+            refresh_token = request.COOKIES.get("refresh_token")
             if not refresh_token:
                 raise NotAuthenticated("Refresh token not found")
 
@@ -69,8 +72,8 @@ class CustomTokenRefreshView(APIView):
 
             return Response(
                 {
-                    'detail': 'Token refreshed successfully',
-                    'access_token': new_access_token,
+                    "detail": "Token refreshed successfully",
+                    "access_token": new_access_token,
                 },
                 status=status.HTTP_200_OK,
             )
@@ -90,15 +93,17 @@ class LogoutView(APIView):
 
     def post(self, request):
         try:
-            refresh_token = request.COOKIES.get('refresh_token')
+            refresh_token = request.COOKIES.get("refresh_token")
             if not refresh_token:
                 raise NotAuthenticated("Refresh token not found")
 
             token = RefreshToken(refresh_token)
             token.blacklist()
 
-            response = Response({'detail': 'Logout successful'}, status=status.HTTP_200_OK)
-            response.delete_cookie('refresh_token')
+            response = Response(
+                {"detail": "Logout successful"}, status=status.HTTP_200_OK
+            )
+            response.delete_cookie("refresh_token")
             return response
         except Exception:
             raise AuthenticationFailed("Invalid token ")
@@ -108,12 +113,13 @@ class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticated]
 
- 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({'detail': 'Password updated successfully.'}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Password updated successfully."}, status=status.HTTP_200_OK
+        )
 
 
 class UserMeView(generics.RetrieveAPIView):
@@ -139,24 +145,28 @@ class UserDeleteView(generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
-    lookup_field = "id"   # actual DB field
+    lookup_field = "id"  # actual DB field
     lookup_url_kwarg = "user_id"  # URL parameter name
 
-    def delete(self,request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         user = self.get_object()
         if user.is_superuser:
-            return Response({"detail": "Cannot delete superuser"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Cannot delete superuser"}, status=status.HTTP_403_FORBIDDEN
+            )
         return super().delete(request, *args, **kwargs)
 
 
 class UserActivateView(APIView):
     permission_classes = [IsAdmin]
 
-    def post(self,request, user_id):
+    def post(self, request, user_id):
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         user.is_active = True
         user.save()
@@ -166,24 +176,29 @@ class UserActivateView(APIView):
 class UserDeactivateView(APIView):
     permission_classes = [IsAdmin]
 
-    def post(self,request, user_id):
+    def post(self, request, user_id):
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
         user.is_active = False
         user.save()
         return Response({"detail": "user deactivated"}, status=status.HTTP_200_OK)
 
-#  not finished yet ! 
+
+#  not finished yet !
 class UserPasswordResetView(APIView):
     permission_classes = [IsAdmin]
 
-    def post(self,request, user_id):
+    def post(self, request, user_id):
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         # had to change
         # get new temporay password generated by admin and
@@ -193,12 +208,17 @@ class UserPasswordResetView(APIView):
         try:
             PasswordService.send_temp_password_email(user, temp_password)
         except Exception:
-            return Response({"detail": "Failed to send email, password not changed"}, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(
+                {"detail": "Failed to send email, password not changed"},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         user.set_password(temp_password)
         user.must_change_password = True
         user.save()
-        return Response({"detail": "password reset and sent via email"}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "password reset and sent via email"}, status=status.HTTP_200_OK
+        )
 
 
 # have to add update user api - for both admin and employee .
