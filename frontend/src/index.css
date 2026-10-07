@@ -1,16 +1,84 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+@import "tailwindcss";
 
+/* ---------- Theme values (change per role) ---------- */
+:root,
+[data-theme="admin"] {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-soft: #dbeafe;
+  --sidebar: #0f172a;
+}
+
+[data-theme="employee"] {
+  --primary: #16a34a;
+  --primary-hover: #15803d;
+  --primary-soft: #dcfce7;
+  --sidebar: #0b1f1a;
+}
+
+/* ---------- Map theme values to Tailwind utilities ---------- */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-sidebar: var(--sidebar);
+}
+
+/* ---------- Shared tokens (same for both roles) ---------- */
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-sidebar: #0f172a;
+  /* Surfaces */
   --color-page: #f8fafc;
   --color-border: #e2e8f0;
-  --color-muted: #64748b;
+
+  /* Text */
+  --color-heading: #0f172a; /* titles, important text */
+  --color-body: #334155; /* normal text, labels */
+  --color-muted: #64748b; /* helper text, table headers */
+  --color-subtle: #94a3b8; /* placeholders, icons */
+  --color-inverse: #ffffff; /* text on primary / dark backgrounds */
+
+  /* Sidebar text */
+  --color-sidebar-text: #cbd5e1;
+  --color-sidebar-muted: #94a3b8;
+
+  /* Status */
   --color-success: #16a34a;
   --color-warning: #f59e0b;
   --color-danger: #dc2626;
 }
+
+/* ---------- Body base styles ---------- */
+@layer base {
+  body {
+    @apply bg-page font-sans text-body antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-heading;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+  ::placeholder {
+    @apply text-subtle;
+  }
+}
+
+/* 
+referecce :
+text-heading	Page titles, card titles
+text-body	Normal text, form labels
+text-muted	Subtitles, table headers, helper text
+text-subtle	Placeholders, icons
+text-inverse	Text on buttons and the brand panel
+text-sidebar-text	Sidebar items
+text-sidebar-muted	Sidebar inactive icons, section labels
+text-primary	Links such as "Forgot password?"
+*/
