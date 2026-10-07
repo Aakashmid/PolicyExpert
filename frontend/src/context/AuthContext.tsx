@@ -15,11 +15,7 @@ import {
   logoutRequest,
   refreshRequest,
 } from "@/features/auth/api/auth.api";
-import type {
-  LoginPayload,
-  LoginResponse,
-  User,
-} from "@/features/auth/auth.types";
+import type { LoginPayload, User } from "@/features/auth/auth.types";
 
 interface AuthContextType {
   user: User | null;
@@ -38,19 +34,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const accessTokenRef = useRef<string | null>(null);
 
   // keeps ref (for interceptor) and state (for re-render) in sync
-  const setSession = useCallback((token: string | null) => {
-    accessTokenRef.current = token;
-    setAccessToken(token);
+  const setSession = useCallback(
+    (token: string | null, mustChangePassword?: boolean) => {
+      accessTokenRef.current = token;
+      setAccessToken(token);
 
-    // if token is set, fetch the current user and update the state
-    if (token) {
-      getCurrentUser()
-        .then(setUser)
-        .catch(() => setUser(null));
-    } else {
-      setUser(null);
-    }
-  }, []);
+      // if token is set, fetch the current user and update the state
+      if (token) {
+        getCurrentUser()
+          .then(setUser)
+          .catch(() => setUser(null));
+      } else {
+        setUser(null);
+      }
+
+      // if mustChangePassword is true, update the user state to reflect that
+      if (mustChangePassword && user) {
+        setUser({ ...user, must_change_password: true });
+      }
+    },
+    [],
+  );
 
   // 1. Interceptors (declared first so they exist before the restore call runs)
   useEffect(() => {
@@ -101,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback(
     async (payload: LoginPayload) => {
       const data = await loginRequest(payload);
-      setSession(data.access_token);
+      setSession(data.access_token, data.must_change_password);
     },
     [setSession],
   );

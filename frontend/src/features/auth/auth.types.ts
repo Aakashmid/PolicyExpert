@@ -13,7 +13,7 @@ export interface User {
   last_name: string;
   email: string;
   role: Role;
-  is_active: boolean;
+  must_change_password?: boolean;
 }
 
 

@@ -1,8 +1,9 @@
 import os
-from decouple import config
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
+
 import django_stubs_ext
+from decouple import config
 
 django_stubs_ext.monkeypatch()
 
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     "chat",
     "policies",
     # third party apps
+    "corsheaders",
     "rest_framework",
     "drf_spectacular",
     "django_celery_results",
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -159,6 +162,12 @@ SPECTACULAR_SETTINGS = {
 
 AUTH_USER_MODEL = "accounts.User"
 
+# cors configurations
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
 
 # Celery settings
 CELERY_RESULT_BACKEND = "django-db"  # using django database as result backend
@@ -168,12 +177,12 @@ CELERY_RESULT_EXTENDED = True  # for enabling task name and other fields in admi
 
 # enviornment variable
 CELERY_BROKER_URL = config("CELERY_BROKER_URL", default="redis://localhost:6379/0")
-MAX_FILE_SIZE=config("MAX_FILE_SIZE",default=5,cast=int)
-POPPLER_PATH=config("POPPLER_PATH")
-POLICY_CHUNKS_LIMIT=config("POLICY_CHUNKS_LIMIT",default=300,cast=int)
-GITHUB_TOKEN=config("GITHUB_TOKEN")
-GITHUB_BASE_URL=config("GITHUB_BASE_URL")
-GOOGLE_API_KEY=config("GOOGLE_API_KEY")
+MAX_FILE_SIZE = config("MAX_FILE_SIZE", default=5, cast=int)
+POPPLER_PATH = config("POPPLER_PATH")
+POLICY_CHUNKS_LIMIT = config("POLICY_CHUNKS_LIMIT", default=300, cast=int)
+GITHUB_TOKEN = config("GITHUB_TOKEN")
+GITHUB_BASE_URL = config("GITHUB_BASE_URL")
+GOOGLE_API_KEY = config("GOOGLE_API_KEY")
 
 
 # to-do : have to create logger for production!
