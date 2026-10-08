@@ -1,12 +1,13 @@
 // src/routes/AppRoutes.tsx
 import { Navigate, Route, Routes } from "react-router-dom";
-import LoginPage from "@/pages/LoginPage";
+import LoginPage from "@/features/auth/pages/LoginPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import EmployeeLayout from "@/layouts/EmployeeLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import RootRedirect from "./RootRedirect";
 import PublicRoute from "./PublicRoute";
 import NotFoundPage from "@/pages/NotFound";
+import DashboardPage from "@/features/dashboard/DashboardPage";
 
 export default function AppRoutes() {
   return (
@@ -23,7 +24,7 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<div>Dashboard</div>} />
+          <Route path="dashboard" element={<DashboardPage />} />
           <Route path="policies" element={<div>Policies</div>} />
           <Route path="upload" element={<div>Upload Policy</div>} />
           <Route path="queue" element={<div>Processing Queue</div>} />

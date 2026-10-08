@@ -1,5 +1,5 @@
 // src/features/auth/pages/LoginPage.tsx
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/features/auth/components/LoginForm";
 
 const LoginPage = () => {
   return (
@@ -9,7 +9,7 @@ const LoginPage = () => {
         <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary text-2xl font-semibold">
           P {/* has to  Use  brand  logo */}
         </div>
-        <h1 className="text-3xl font-semibold text-inverse">
+        <h1 className="text-4xl font-semibold text-inverse">
           {/* has to change name  */}
           The Policy Expert
         </h1>
@@ -31,8 +31,8 @@ const LoginPage = () => {
             </span>
           </div>
 
-          <h2 className="text-2xl font-semibold">Welcome back</h2>
-          <p className="mb-6 mt-1 text-sm text-muted">
+          <h2 className="text-3xl font-semibold">Welcome back</h2>
+          <p className="mb-8 mt-1 text-base text-muted">
             Sign in to your account
           </p>
 

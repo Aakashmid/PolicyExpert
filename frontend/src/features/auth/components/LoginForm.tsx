@@ -2,7 +2,7 @@
 import { useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { LuEyeOff, LuEye } from "react-icons/lu";
 
 const LoginForm = () => {
   const { login, user, isAuthenticated } = useAuth();
@@ -18,26 +18,26 @@ const LoginForm = () => {
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // 2. Clear the previous error and disable the button
+    //  Clear the previous error and disable the button
     setError("");
     setIsSubmitting(true);
 
     try {
-      // 3. Call login from AuthContext (it calls the API and sets the user)
+      // Call login from AuthContext (it calls the API and sets the user)
       await login({ email, password });
 
-      // 4. Redirect based on role
+      // Redirect based on role
       //    admin    -> "/admin/dashboard"
       //    employee -> "/chat"
       if (isAuthenticated && user) {
         navigate(user.role === "admin" ? "/admin/dashboard" : "/chat");
       }
     } catch (err) {
-      // 5. Show an error message
+      // Show an error message
       //    (wrong credentials, network error, etc.)
       setError("Invalid email or password");
     } finally {
-      // 6. Re-enable the button
+      //  Re-enable the button
       setIsSubmitting(false);
     }
   };
@@ -46,14 +46,14 @@ const LoginForm = () => {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {/* Error message */}
       {error && (
-        <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-danger">
+        <div className="rounded-lg bg-red-50 px-3 py-2   text-danger">
           {error}
         </div>
       )}
 
       {/* Email */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium">
+        <label htmlFor="email" className=" font-medium">
           Email
         </label>
         <input
@@ -64,13 +64,13 @@ const LoginForm = () => {
           placeholder="you@company.com"
           autoComplete="email"
           required
-          className="h-10 rounded-lg border border-border px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          className="h-10 rounded-lg border border-border px-3  outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
       </div>
 
       {/* Password */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium">
+        <label htmlFor="password" className=" font-medium">
           Password
         </label>
         <div className="relative">
@@ -82,32 +82,32 @@ const LoginForm = () => {
             placeholder="Enter your password"
             autoComplete="current-password"
             required
-            className="h-10 w-full rounded-lg border border-border px-3 pr-14 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+            className="h-10 w-full rounded-lg border border-border px-3 pr-14  outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-3 text-md  text-muted hover:text-heading"
+            className="absolute inset-y-0 right-3   text-muted hover:text-heading"
           >
-            {showPassword ? <BsEye /> : <BsEyeSlash />}
+            {showPassword ? <LuEye /> : <LuEyeOff />}
           </button>
         </div>
       </div>
 
       {/* Remember me + forgot password */}
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between ">
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-4 w-4 accent-primary"
+            className="h-4 w-4 accent-primary "
           />
           {/* Todo : has to implement later */}
           Remember me
         </label>
         {/* TODO: link to the forgot password page */}
-        <a href="#" className="text-primary hover:underline">
+        <a href="#" className="text-primary hover:underline ">
           Forgot password?
         </a>
       </div>
@@ -116,7 +116,7 @@ const LoginForm = () => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="h-10 rounded-lg bg-primary text-sm font-medium text-inverse transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-10 rounded-lg bg-primary  font-medium text-inverse transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Signing in..." : "Sign in"}
       </button>
