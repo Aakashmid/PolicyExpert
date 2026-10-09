@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from django.urls import reverse
+from rest_framework import serializers
+
 from .models import Policy
 from .tasks import PROCESSING_ERRORS
 
@@ -24,6 +25,7 @@ class PolicySerializer(serializers.ModelSerializer):
             "effective_from",
             "uploaded_on",
             "updated_on",
+            "page_count",
             "uploaded_by_name",
             "processing_error",
             "is_retryable",
@@ -34,6 +36,7 @@ class PolicySerializer(serializers.ModelSerializer):
             "uploaded_on",
             "updated_on",
             "status",
+            "page_count",
             "processing_error",
         )
 
@@ -57,8 +60,9 @@ class PolicySerializer(serializers.ModelSerializer):
 
     def get_view_url(self, obj):
         request = self.context.get("request")
-        return request.build_absolute_uri(reverse("policy-download", args=[obj.id]) + "?mode=view")
-
+        return request.build_absolute_uri(
+            reverse("policy-download", args=[obj.id]) + "?mode=view"
+        )
 
 
 class PolicyCreateSerializer(PolicySerializer):
@@ -76,6 +80,7 @@ class PolicyCreateSerializer(PolicySerializer):
             "uploaded_on",
             "updated_on",
             "status",
+            "page_count",
             "processing_error",
         )
 

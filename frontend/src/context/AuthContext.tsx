@@ -14,7 +14,7 @@ import {
   loginRequest,
   logoutRequest,
   refreshRequest,
-} from "@/features/auth/api/auth.api";
+} from "@/features/auth/auth.api";
 import type { LoginPayload, User } from "@/features/auth/auth.types";
 
 interface AuthContextType {
@@ -35,22 +35,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // keeps ref (for interceptor) and state (for re-render) in sync
   const setSession = useCallback(
-    (token: string | null, mustChangePassword?: boolean) => {
+    async (token: string | null, mustChangePassword?: boolean) => {
       accessTokenRef.current = token;
       setAccessToken(token);
 
-      // if token is set, fetch the current user and update the state
-      if (token) {
-        getCurrentUser()
-          .then(setUser)
-          .catch(() => setUser(null));
-      } else {
+      if (!token) {
         setUser(null);
+        return;
       }
 
-      // if mustChangePassword is true, update the user state to reflect that
-      if (mustChangePassword && user) {
-        setUser({ ...user, must_change_password: true });
+      try {
+        const currentUser = await getCurrentUser();
+        setUser({
+          ...currentUser,
+          ...(mustChangePassword ? { must_change_password: true } : {}),
+        });
+      } catch {
+        setUser(null);
+        setAccessToken(null);
+        accessTokenRef.current = null;
+        throw new Error("Could not restore the current user");
       }
     },
     [],
@@ -94,18 +98,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [setSession]);
 
-  // 2. Restore session on page load using the refresh cookie
+  // 2.
+  // Restore the session only after both token refresh and user lookup finish.
   useEffect(() => {
-    refreshRequest()
-      .then((data) => setSession(data.access_token))
-      .catch(() => setSession(null))
-      .finally(() => setIsLoading(false));
+    const restoreSession = async () => {
+      try {
+        const data = await refreshRequest();
+        await setSession(data.access_token);
+      } catch {
+        await setSession(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void restoreSession();
   }, [setSession]);
 
+  // login
   const login = useCallback(
     async (payload: LoginPayload) => {
       const data = await loginRequest(payload);
-      setSession(data.access_token, data.must_change_password);
+      await setSession(data.access_token, data.must_change_password);
     },
     [setSession],
   );
@@ -114,7 +128,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await logoutRequest(); // clears the cookie on the server
     } finally {
-      setSession(null);
+      await setSession(null);
     }
   }, [setSession]);
 

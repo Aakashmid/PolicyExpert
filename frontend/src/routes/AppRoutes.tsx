@@ -8,6 +8,7 @@ import RootRedirect from "./RootRedirect";
 import PublicRoute from "./PublicRoute";
 import NotFoundPage from "@/pages/NotFound";
 import DashboardPage from "@/features/dashboard/DashboardPage";
+import UploadPolicyPage from "@/features/policy/pages/UploadPolicyPage";
 
 export default function AppRoutes() {
   return (
@@ -26,7 +27,7 @@ export default function AppRoutes() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="policies" element={<div>Policies</div>} />
-          <Route path="upload" element={<div>Upload Policy</div>} />
+          <Route path="upload" element={<UploadPolicyPage />} />
           <Route path="queue" element={<div>Processing Queue</div>} />
           <Route path="analytics" element={<div>Analytics</div>} />
           <Route path="evaluation" element={<div>Evaluation</div>} />

@@ -1,7 +1,7 @@
 from django.conf import settings
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
 _embeddings = None
 _vectorstore = None

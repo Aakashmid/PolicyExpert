@@ -1,6 +1,5 @@
 // src/features/dashboard/pages/DashboardPage.tsx
 import { LuFileText, LuMessageSquare, LuUsers, LuTarget } from "react-icons/lu";
-import { useAuth } from "@/context/AuthContext";
 import PageHeader from "@/layouts/PageHeader";
 import StatCard from "@/components/ui/StatCard";
 import PolicyStatusChart from "./components/PolicyStatusChart";
@@ -17,8 +16,6 @@ const statIcons = {
 } satisfies Record<StatKey, typeof LuFileText>;
 
 export default function DashboardPage() {
-  // const { user } = useAuth();
-
   // TODO: replace the mock with getDashboardData() (useEffect + useState),
   // and handle loading and error states.
   const data = dashboardMock;

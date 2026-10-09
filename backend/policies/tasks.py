@@ -1,10 +1,11 @@
-from django.conf import settings
 import fitz  # PyMuPDF for OCR and text extraction from scanned PDFs
-from .models import Policy
-from rag.vectorstore import get_vectorstore
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader, UnstructuredPDFLoader
 from celery import shared_task
+from django.conf import settings
+from langchain_community.document_loaders import PyPDFLoader, UnstructuredPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from rag.vectorstore import get_vectorstore
+
+from .models import Policy
 
 
 # load  text from image based pdfs using  OCR
@@ -18,7 +19,6 @@ def is_scanned_pdf(pdf_path):
     return True  # No text → likely scanned
 
 
-
 PROCESSING_ERRORS = {
     "POLICY_NOT_FOUND": ("The policy could not be found.", False),
     "FILE_NOT_FOUND": ("The uploaded policy file could not be found.", False),
@@ -26,19 +26,24 @@ PROCESSING_ERRORS = {
     "NO_TEXT_FOUND": ("No readable text was found in this document.", False),
     "POLICY_TOO_LARGE": ("The policy is too large to process.", False),
     "NO_VALID_CHUNKS": ("No valid content could be created from this document.", False),
-    "VECTOR_STORE_UNAVAILABLE": ("The AI knowledge base is currently unavailable.", True),
+    "VECTOR_STORE_UNAVAILABLE": (
+        "The AI knowledge base is currently unavailable.",
+        True,
+    ),
     "INDEXING_FAILED": ("Failed to add the policy to the AI knowledge base.", True),
-    "PROCESSING_FAILED": ("An unexpected error occurred while processing the policy.", True),
+    "PROCESSING_FAILED": (
+        "An unexpected error occurred while processing the policy.",
+        True,
+    ),
     "QUEUE_FAILED": ("Could not queue this policy for processing.", True),
-
 }
 
-# helper function to handle policy failed 
+
+# helper function to handle policy failed
 def mark_policy_failed(policy, error_code):
     policy.status = Policy.Status.FAILED
     policy.processing_error_code = error_code
     policy.save(update_fields=["status", "processing_error_code"])
-
 
 
 @shared_task
@@ -53,14 +58,16 @@ def process_policy(policy_id):
 
         # 2. Start processing
         policy.status = Policy.Status.PROCESSING
-        policy.processing_error_code= None
+        policy.processing_error_code = None
         policy.save()
 
         # 3. Validate file
         if not policy.file:
             raise ValueError("FILE_NOT_FOUND")
 
-        file_path = policy.file.path  # for dev , for procuction implement createing path for file!
+        file_path = (
+            policy.file.path
+        )  # for dev , for procuction implement createing path for file!
         # 4. Load document
         try:
             if is_scanned_pdf(file_path):
@@ -81,7 +88,6 @@ def process_policy(policy_id):
         if not docs:
             raise ValueError("NO_TEXT_FOUND")
 
-
         # 6. Chunking
         try:
             text_splitter = RecursiveCharacterTextSplitter(
@@ -96,7 +102,7 @@ def process_policy(policy_id):
             raise ValueError("PDF_EXTRACTION_FAILED") from exc
 
         # 7. Size validation
-        if len(chunks) > settings.POLICY_CHUNKS_LIMIT:  # change later 
+        if len(chunks) > settings.POLICY_CHUNKS_LIMIT:  # change later
             raise ValueError("POLICY_TOO_LARGE")
 
         # 8. Filter empty chunks
@@ -110,13 +116,15 @@ def process_policy(policy_id):
             raise ValueError("NO_VALID_CHUNKS")
 
         # ------------ not complete , complete later during source citations
-        # 9. Add metadata  
+        # 9. Add metadata
         for chunk in non_empty_chunks:
-            chunk.metadata.update({
-                "policy_id": policy.id,
-                # "user_id": policy.uploaded_by.id,# uploaded_by.id can be null
-                "source": policy.file.name,
-            })
+            chunk.metadata.update(
+                {
+                    "policy_id": policy.id,
+                    # "user_id": policy.uploaded_by.id,# uploaded_by.id can be null
+                    "source": policy.file.name,
+                }
+            )
         # ------------
 
         # 10. Get vector store
@@ -130,19 +138,18 @@ def process_policy(policy_id):
             batch_size = 100
 
             for i in range(0, len(non_empty_chunks), batch_size):
-                batch = non_empty_chunks[i:i + batch_size]
-                vector_store.add_documents(batch)  # doing embeddings 
+                batch = non_empty_chunks[i : i + batch_size]
+                vector_store.add_documents(batch)  # doing embeddings
 
         except Exception as exc:
             raise ValueError("INDEXING_FAILED") from exc
 
         # 12. Success
         policy.status = Policy.Status.READY
-        policy.processing_error_code= None
+        policy.processing_error_code = None
         policy.save()
 
     except ValueError as exc:
-
         error_code = str(exc)
 
         if policy:
@@ -151,7 +158,6 @@ def process_policy(policy_id):
         raise
 
     except Exception:
-
         if policy:
             mark_policy_failed(policy, "PROCESSING_FAILED")
 
