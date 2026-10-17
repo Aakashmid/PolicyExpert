@@ -37,7 +37,7 @@ export default function Sidebar() {
             key={path}
             to={path}
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2.5  transition-colors ${
+              `flex items-center gap-3 rounded-lg px-3 py-2.5  transition-colors text-sm ${
                 isActive
                   ? "bg-primary text-inverse"
                   : "text-sidebar-text hover:bg-white/10"
@@ -67,7 +67,7 @@ export default function Sidebar() {
         </div>
         <button
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5  text-sidebar-text transition-colors hover:bg-white/10"
+          className="flex w-full items-center gap-3 text-sm rounded-lg px-3 py-2.5  text-sidebar-text transition-colors hover:bg-white/10"
         >
           <LuLogOut className="h-5 w-5" />
           Logout

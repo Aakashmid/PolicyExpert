@@ -8,7 +8,7 @@ import { DEPARTMENTS } from "../policy.contants";
 import { uploadPolicy } from "../policy.api";
 
 const inputClass =
-  "h-10 w-full rounded-lg border border-border bg-white px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft";
+  "h-10 w-full rounded-lg border border-border bg-white px-3 text-sm   outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft";
 
 export default function UploadPolicyPage() {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ export default function UploadPolicyPage() {
 
       <form onSubmit={handleSubmit} className="flex  flex-col gap-6">
         {error && (
-          <div className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
+          <div className="rounded-lg bg-danger/10 px-3 py-2 text-sm  text-danger">
             {error}
           </div>
         )}
@@ -91,11 +91,11 @@ export default function UploadPolicyPage() {
 
         {/* Metadata */}
         <div className="rounded-xl border border-border bg-white p-5">
-          <h2 className="mb-4 text-base font-medium">Policy Metadata</h2>
+          <h2 className="mb-4 text-base  font-medium">Policy Metadata</h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="name" className="text-sm font-medium">
+              <label htmlFor="name" className="text-sm  font-medium">
                 Policy Name
               </label>
               <input
@@ -109,7 +109,7 @@ export default function UploadPolicyPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="department" className="text-sm font-medium">
+              <label htmlFor="department" className="text-sm  font-medium">
                 Department
               </label>
               <select
@@ -129,7 +129,7 @@ export default function UploadPolicyPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="version" className="text-sm font-medium">
+              <label htmlFor="version" className="text-sm  font-medium">
                 Version
               </label>
               <input
@@ -142,7 +142,7 @@ export default function UploadPolicyPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="effective_from" className="text-sm font-medium">
+              <label htmlFor="effective_from" className="text-sm  font-medium">
                 Effective Date
               </label>
               <input
@@ -156,7 +156,7 @@ export default function UploadPolicyPage() {
             </div>
 
             <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <label htmlFor="description" className="text-sm font-medium">
+              <label htmlFor="description" className="text-sm  font-medium">
                 Description{" "}
                 <span className="font-normal text-muted">(Optional)</span>
               </label>
@@ -167,7 +167,7 @@ export default function UploadPolicyPage() {
                 onChange={handleChange}
                 rows={3}
                 placeholder="Enter description"
-                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+                className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm  outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
               />
             </div>
           </div>
@@ -178,15 +178,11 @@ export default function UploadPolicyPage() {
           <button
             type="button"
             onClick={() => navigate("/admin/policies")}
-            className="h-10 rounded-lg border border-border bg-white px-4 text-sm font-medium transition-colors hover:bg-slate-50"
+            className="h-10 rounded-lg border border-border bg-white px-4 text-sm  font-medium transition-colors hover:bg-slate-50"
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="h-10 rounded-lg bg-primary px-4 text-sm font-medium text-inverse transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <button type="submit" disabled={isSubmitting} className="btn-primary">
             {isSubmitting ? "Uploading..." : "Upload Policy"}
           </button>
         </div>

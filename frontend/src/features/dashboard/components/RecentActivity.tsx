@@ -10,7 +10,7 @@ export default function RecentActivity({ data }: { data: ActivityItem[] }) {
 
       {/* Scrolls sideways on small screens instead of breaking the page */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[480px] text-left text-sm">
+        <table className="w-full min-w-120 text-left text-sm">
           <thead>
             <tr className="border-b border-border text-muted">
               <th className="pb-3 font-medium">Activity</th>

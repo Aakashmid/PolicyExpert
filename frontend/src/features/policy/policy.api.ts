@@ -1,10 +1,11 @@
 import api from "@/services/api";
-import type { Policy, UploadPolicyPayload } from "./policy.types";
+import { getMockPoliciesPage } from "./policy.mock";
+import type { PaginatedResponse, Policy, PolicyStatus ,UploadPolicyPayload } from "./policy.types";
 
-export const getPolicies = async () => {
-  const { data } = await api.get<Policy[]>("/policies/");
-  return data;
-};
+// export const getPolicies = async () => {
+//   const { data } = await api.get<Policy[]>("/policies/");
+//   return data;
+// };
 
 export const uploadPolicy = async (payload: UploadPolicyPayload) => {
   const formData = new FormData();
@@ -21,4 +22,22 @@ export const uploadPolicy = async (payload: UploadPolicyPayload) => {
 
 export const deletePolicy = async (id: number) => {
   await api.delete(`/policies/${id}/`);
+};
+
+
+
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK_POLICIES === "true";
+
+interface GetPoliciesParams {
+  page: number;
+  page_size: number;
+  status?: PolicyStatus;
+}
+
+export const getPolicies = async (params: GetPoliciesParams) => {
+  if (USE_MOCK) return getMockPoliciesPage(params);
+
+  const { data } = await api.get<PaginatedResponse<Policy>>("/policies/", { params });
+  return data;
 };

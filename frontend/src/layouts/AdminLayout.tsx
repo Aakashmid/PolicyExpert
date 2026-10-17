@@ -9,8 +9,10 @@ export default function AdminLayout() {
       <div className="hidden lg:block lg:w-64 shrink-0">
         <Sidebar />
       </div>
-      <main className="flex-1 overflow-y-auto px-8 py-6 max-w-4xl mx-auto">
-        <Outlet />
+      <main className="flex-1 overflow-y-auto">
+        <div className=" px-8 py-6 max-w-7xl">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

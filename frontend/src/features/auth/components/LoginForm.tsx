@@ -95,8 +95,8 @@ const LoginForm = () => {
       </div>
 
       {/* Remember me + forgot password */}
-      <div className="flex items-center justify-between ">
-        <label className="flex items-center gap-2">
+      <div className="flex items-center justify-between  ">
+        <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
             checked={rememberMe}
@@ -107,7 +107,7 @@ const LoginForm = () => {
           Remember me
         </label>
         {/* TODO: link to the forgot password page */}
-        <a href="#" className="text-primary hover:underline ">
+        <a href="#" className="text-primary hover:underline  text-sm">
           Forgot password?
         </a>
       </div>

@@ -23,5 +23,7 @@ export const dashboardMock: DashboardData = {
     { id: 1, activity: "Policy uploaded", policy: "HR Policy Handbook.pdf", status: "completed", time: "2 mins ago" },
     { id: 2, activity: "Processing started", policy: "Benefits Policy.pdf", status: "processing", time: "10 mins ago" },
     { id: 3, activity: "Processing failed", policy: "Vendor Policy.pdf", status: "failed", time: "1 hour ago" },
+    { id: 4, activity: "Processing failed", policy: "Vendor Policy.pdf", status: "failed", time: "1 hour ago" },
+    { id: 5, activity: "Processing failed", policy: "Vendor Policy.pdf", status: "failed", time: "1 hour ago" },
   ],
 };

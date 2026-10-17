@@ -11,7 +11,7 @@ export interface Policy {
   effective_from: string;    // ISO date string
   uploaded_on: string;       // ISO date string
   updated_on: string;        // ISO date string
-  uploaded_by_name: string;
+  uploaded_by_name: string | null;
   page_count:number;
   processing_error: string | null; // set when status is "failed"
   is_retryable: boolean;           // shows the retry button in the queue
@@ -26,4 +26,11 @@ export interface UploadPolicyPayload {
   version: string;
   effective_from: string;   // value of the date input
   description?: string;
+}
+
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
 }

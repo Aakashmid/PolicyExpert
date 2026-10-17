@@ -21,7 +21,7 @@ export default function DashboardPage() {
   const data = dashboardMock;
 
   return (
-    <div>
+    <div className="">
       <PageHeader
         title="Dashboard"
         // action={
